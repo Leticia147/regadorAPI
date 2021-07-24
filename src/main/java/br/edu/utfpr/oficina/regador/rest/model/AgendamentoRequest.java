@@ -5,14 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AgendamentoRequest {
-    @JsonProperty(value="data", required = true)
-    private LocalDate data;
-    @JsonProperty(value="duracao", required = true)
-    private Integer duracao;
+    @JsonProperty(value="dataInicial", required = true)
+    private LocalDateTime dataInicial;
+    @JsonProperty(value="dataFinal", required = true)
+    private LocalDateTime dataFinal;
 }
