@@ -1,22 +1,27 @@
 package br.edu.utfpr.oficina.regador.rest.controller;
 
+import br.edu.utfpr.oficina.regador.domain.ports.AgendamentosPort;
+import br.edu.utfpr.oficina.regador.rest.mapper.Mapper;
 import br.edu.utfpr.oficina.regador.rest.model.AgendamentoRequest;
 import br.edu.utfpr.oficina.regador.rest.model.AgendamentoResponse;
 import br.edu.utfpr.oficina.regador.rest.model.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static br.edu.utfpr.oficina.regador.rest.mapper.Mapper.map;
 
 @Controller
 @RequestMapping(path = "/regador", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RegadorController {
+
+    @Autowired
+    private AgendamentosPort agendamentosService;
 
     @GetMapping("/teste")
     public ResponseEntity<AgendamentoRequest> teste(){
@@ -25,49 +30,39 @@ public class RegadorController {
     }
 
     @GetMapping("/agendamentos")
-    public ResponseEntity<List<AgendamentoResponse>> buscarAgendamentos(){
-        List<AgendamentoResponse> agendamentos = new ArrayList<>();
-        AgendamentoResponse agendamentoResponse = new AgendamentoResponse(
-                UUID.randomUUID().toString(), LocalDateTime.now(), LocalDateTime.now().plus(1, ChronoUnit.HOURS));
-        AgendamentoResponse agendamentoResponse2 = new AgendamentoResponse(
-                UUID.randomUUID().toString(), LocalDateTime.now(), LocalDateTime.now().plus(10, ChronoUnit.HOURS));
-        AgendamentoResponse agendamentoResponse3 = new AgendamentoResponse(
-                UUID.randomUUID().toString(), LocalDateTime.now(), LocalDateTime.now().plus(20, ChronoUnit.HOURS));
-        AgendamentoResponse agendamentoResponse4 = new AgendamentoResponse(
-                UUID.randomUUID().toString(), LocalDateTime.now(), LocalDateTime.now().plus(30, ChronoUnit.HOURS));
-        agendamentos.add(agendamentoResponse);
-        agendamentos.add(agendamentoResponse2);
-        agendamentos.add(agendamentoResponse3);
-        agendamentos.add(agendamentoResponse4);
-        return ResponseEntity.ok(agendamentos);
+    public ResponseEntity<List<AgendamentoResponse>> buscarAgendamentos() {
+        return ResponseEntity.ok(
+                agendamentosService.consultarTodosOsAgendamentos()
+                        .stream()
+                        .map(Mapper::map)
+                        .collect(Collectors.toList())
+        );
     }
 
     @PostMapping(path = "/agendar", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Response> incluirAgendamento(
+    public ResponseEntity<AgendamentoResponse> incluirAgendamento(
             @RequestBody AgendamentoRequest input
     ){
-        Response response = new Response();
-        response.setMessage("Teste de integracao da api");
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(
+                map(agendamentosService.incluirAgendamento(input.getDataInicial(), input.getDataFinal()))
+        );
     }
 
     @PutMapping(path = "/agendar/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Response> alterarAgendamento(
+    public ResponseEntity<AgendamentoResponse> alterarAgendamento(
             @PathVariable("id") String identificador, @RequestBody AgendamentoRequest input
     ){
-        Response response = new Response();
-        response.setMessage("Teste de integracao da api");
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(
+                map(agendamentosService.atualizarAgendamento(map(identificador, input)))
+        );
     }
 
     @DeleteMapping(path = "/agendamentos/{id}")
     public ResponseEntity<Response> deletarAgendamento(
             @PathVariable("id") String identificador
     ){
-        Response response = new Response();
-        response.setMessage("Teste de integracao da api");
-        return ResponseEntity.ok(response);
+        agendamentosService.removerAgendamento(identificador);
+        return ResponseEntity.ok(new Response ("Removido com sucesso"));
     }
-
 
 }
