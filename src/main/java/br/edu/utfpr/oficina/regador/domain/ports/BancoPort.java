@@ -9,7 +9,7 @@ public interface BancoPort {
 
     List<Agendamento> consultarTodosOsAgendamentos();
     Agendamento incluirAgendamento(LocalDateTime horarioInicial, LocalDateTime horarioFinal);
-    void atualizarAgendamento(String identificador, Agendamento agendamento);
+    Agendamento atualizarAgendamento(Agendamento agendamento);
     void removerAgendamento(String identificador);
 
 }

@@ -1,5 +1,6 @@
 package br.edu.utfpr.oficina.regador.rest.controller;
 
+import br.edu.utfpr.oficina.regador.domain.exceptions.HorarioInvalidoException;
 import br.edu.utfpr.oficina.regador.domain.ports.AgendamentosPort;
 import br.edu.utfpr.oficina.regador.rest.mapper.Mapper;
 import br.edu.utfpr.oficina.regador.rest.model.AgendamentoRequest;
@@ -42,7 +43,7 @@ public class RegadorController {
     @PostMapping(path = "/agendar", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AgendamentoResponse> incluirAgendamento(
             @RequestBody AgendamentoRequest input
-    ){
+    ) throws HorarioInvalidoException {
         return ResponseEntity.ok(
                 map(agendamentosService.incluirAgendamento(input.getDataInicial(), input.getDataFinal()))
         );
@@ -51,7 +52,7 @@ public class RegadorController {
     @PutMapping(path = "/agendar/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AgendamentoResponse> alterarAgendamento(
             @PathVariable("id") String identificador, @RequestBody AgendamentoRequest input
-    ){
+    ) throws HorarioInvalidoException {
         return ResponseEntity.ok(
                 map(agendamentosService.atualizarAgendamento(map(identificador, input)))
         );

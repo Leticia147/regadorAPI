@@ -37,13 +37,17 @@ public class BancoAdapter implements BancoPort {
     }
 
     @Override
-    public void atualizarAgendamento(String identificador, Agendamento agendamento) {
-
+    public Agendamento atualizarAgendamento(Agendamento agendamento) {
+        AgendamentoEntity agendar = new AgendamentoEntity(
+                Long.valueOf(agendamento.getIdentificador()),
+                convert(agendamento.getHorarioInicial()),
+                convert(agendamento.getHorarioFinal())
+        );
+        return map(repository.save(agendar));
     }
 
     @Override
     public void removerAgendamento(String identificador) {
-
+        repository.deleteById(Long.valueOf(identificador));
     }
-
 }

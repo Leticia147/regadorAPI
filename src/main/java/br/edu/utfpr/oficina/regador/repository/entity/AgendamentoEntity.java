@@ -24,5 +24,11 @@ public class AgendamentoEntity {
         this.horarioFinal = horarioFinal;
     }
 
+    public AgendamentoEntity (Long identificador, Date horarioInicial, Date horarioFinal){
+        this.identificador = identificador;
+        this.horarioInicial = horarioInicial;
+        this.horarioFinal = horarioFinal;
+    }
+
 
 }
