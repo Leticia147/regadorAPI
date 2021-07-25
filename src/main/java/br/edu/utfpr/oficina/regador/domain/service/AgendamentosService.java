@@ -23,7 +23,7 @@ public class AgendamentosService implements AgendamentosPort {
     @Override
     public Agendamento incluirAgendamento(LocalDateTime horarioInicial, LocalDateTime horarioFinal) {
         //consultar tudo, er se ja tem algo agendado no horario
-        return null;
+        return bancoAdapter.incluirAgendamento(horarioInicial, horarioFinal);
     }
 
     @Override
