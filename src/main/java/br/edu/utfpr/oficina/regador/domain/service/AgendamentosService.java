@@ -10,8 +10,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static br.edu.utfpr.oficina.regador.domain.helper.Helper.fraseHorarioInvalido;
-import static br.edu.utfpr.oficina.regador.domain.helper.Helper.verificarHorarioExistente;
+import static br.edu.utfpr.oficina.regador.domain.helper.Helper.*;
 
 @Service
 public class AgendamentosService implements AgendamentosPort {
@@ -43,8 +42,8 @@ public class AgendamentosService implements AgendamentosPort {
 
     private void validarHorarios(LocalDateTime horarioInicial, LocalDateTime horarioFinal) throws HorarioInvalidoException {
         List<Agendamento> agendamentos = bancoAdapter.consultarTodosOsAgendamentos();
-        boolean horarioInicialInvalido = verificarHorarioExistente(horarioInicial,agendamentos);
-        boolean horarioFinalInvalido = verificarHorarioExistente(horarioFinal,agendamentos);
+        boolean horarioInicialInvalido = verificarHorarioExistenteInicial(horarioInicial,agendamentos);
+        boolean horarioFinalInvalido = verificarHorarioExistenteFinal(horarioFinal,agendamentos);
         if(horarioInicialInvalido || horarioFinalInvalido) {
             throw new HorarioInvalidoException(fraseHorarioInvalido(horarioInicialInvalido, horarioFinalInvalido));
         }

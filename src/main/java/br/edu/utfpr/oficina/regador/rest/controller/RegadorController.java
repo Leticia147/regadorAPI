@@ -1,6 +1,7 @@
 package br.edu.utfpr.oficina.regador.rest.controller;
 
 import br.edu.utfpr.oficina.regador.domain.exceptions.HorarioInvalidoException;
+import br.edu.utfpr.oficina.regador.domain.ports.AcionarPort;
 import br.edu.utfpr.oficina.regador.domain.ports.AgendamentosPort;
 import br.edu.utfpr.oficina.regador.rest.mapper.Mapper;
 import br.edu.utfpr.oficina.regador.rest.model.AgendamentoRequest;
@@ -24,11 +25,8 @@ public class RegadorController {
     @Autowired
     private AgendamentosPort agendamentosService;
 
-    @GetMapping("/teste")
-    public ResponseEntity<AgendamentoRequest> teste(){
-        AgendamentoRequest agendamentoRequest = new AgendamentoRequest();
-        return ResponseEntity.ok(agendamentoRequest);
-    }
+    @Autowired
+    private AcionarPort acionarPort;
 
     @GetMapping("/agendamentos")
     public ResponseEntity<List<AgendamentoResponse>> buscarAgendamentos() {
@@ -66,4 +64,15 @@ public class RegadorController {
         return ResponseEntity.ok(new Response ("Removido com sucesso"));
     }
 
+    @PostMapping(path = "/ligar")
+    public ResponseEntity<?> ligarRegador()  {
+        acionarPort.ligarRegador();
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping(path = "/desligar")
+    public ResponseEntity<?> desligarRegador()  {
+        acionarPort.desligarRegador();
+        return ResponseEntity.noContent().build();
+    }
 }
