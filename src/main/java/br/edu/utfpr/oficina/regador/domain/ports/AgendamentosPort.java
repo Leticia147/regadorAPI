@@ -12,5 +12,5 @@ public interface AgendamentosPort {
     Agendamento incluirAgendamento(LocalDateTime horarioInicial, LocalDateTime horarioFinal) throws HorarioInvalidoException;
     Agendamento atualizarAgendamento(Agendamento agendamento) throws HorarioInvalidoException;
     void removerAgendamento(String identificador);
-
+    Agendamento consultarAgendamentoId(String id);
 }

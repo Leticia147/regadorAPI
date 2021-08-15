@@ -38,10 +38,15 @@ public class RegadorController {
         );
     }
 
+    @GetMapping("/agendamento/{id}")
+    public ResponseEntity<AgendamentoResponse> buscarAgendamento( @PathVariable("id") String identificador) {
+        return ResponseEntity.ok(
+                map(agendamentosService.consultarAgendamentoId(identificador))
+        );
+    }
+
     @PostMapping(path = "/agendar", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AgendamentoResponse> incluirAgendamento(
-            @RequestBody AgendamentoRequest input
-    ) throws HorarioInvalidoException {
+    public ResponseEntity<AgendamentoResponse> incluirAgendamento(@RequestBody AgendamentoRequest input) {
         return ResponseEntity.ok(
                 map(agendamentosService.incluirAgendamento(input.getDataInicial(), input.getDataFinal()))
         );
@@ -59,19 +64,19 @@ public class RegadorController {
     @DeleteMapping(path = "/agendamentos/{id}")
     public ResponseEntity<Response> deletarAgendamento(
             @PathVariable("id") String identificador
-    ){
+    ) {
         agendamentosService.removerAgendamento(identificador);
-        return ResponseEntity.ok(new Response ("Removido com sucesso"));
+        return ResponseEntity.ok(new Response("Removido com sucesso"));
     }
 
     @PostMapping(path = "/ligar")
-    public ResponseEntity<?> ligarRegador()  {
+    public ResponseEntity<?> ligarRegador() {
         acionarPort.ligarRegador();
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping(path = "/desligar")
-    public ResponseEntity<?> desligarRegador()  {
+    public ResponseEntity<?> desligarRegador() {
         acionarPort.desligarRegador();
         return ResponseEntity.noContent().build();
     }

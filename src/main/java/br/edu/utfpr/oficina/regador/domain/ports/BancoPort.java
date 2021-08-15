@@ -11,5 +11,6 @@ public interface BancoPort {
     Agendamento incluirAgendamento(LocalDateTime horarioInicial, LocalDateTime horarioFinal);
     Agendamento atualizarAgendamento(Agendamento agendamento);
     void removerAgendamento(String identificador);
+    Agendamento consultarAgendamentoId(String id);
 
 }

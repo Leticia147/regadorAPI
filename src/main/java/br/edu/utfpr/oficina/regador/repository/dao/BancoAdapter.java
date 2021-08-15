@@ -1,5 +1,6 @@
 package br.edu.utfpr.oficina.regador.repository.dao;
 
+import br.edu.utfpr.oficina.regador.domain.exceptions.ItemNaoExistenteException;
 import br.edu.utfpr.oficina.regador.domain.model.Agendamento;
 import br.edu.utfpr.oficina.regador.domain.ports.BancoPort;
 import br.edu.utfpr.oficina.regador.repository.RegadorRepository;
@@ -28,6 +29,12 @@ public class BancoAdapter implements BancoPort {
     }
 
     @Override
+    public Agendamento consultarAgendamentoId(String id) {
+        return map(repository.findById(Long.valueOf(id)).orElseThrow(() -> new ItemNaoExistenteException("Item não encontrado")));
+    }
+
+
+    @Override
     public Agendamento incluirAgendamento(LocalDateTime horarioInicial, LocalDateTime horarioFinal) {
         AgendamentoEntity agendar = new AgendamentoEntity(
                 convert(horarioInicial),
@@ -39,15 +46,19 @@ public class BancoAdapter implements BancoPort {
     @Override
     public Agendamento atualizarAgendamento(Agendamento agendamento) {
         AgendamentoEntity agendar = new AgendamentoEntity(
-                Long.valueOf(agendamento.getIdentificador()),
                 convert(agendamento.getHorarioInicial()),
                 convert(agendamento.getHorarioFinal())
         );
-        return map(repository.save(agendar));
+        Agendamento retornoBD = map(repository.save(agendar));
+        repository.deleteById(Long.valueOf(agendamento.getIdentificador()));
+        return retornoBD;
     }
 
     @Override
     public void removerAgendamento(String identificador) {
         repository.deleteById(Long.valueOf(identificador));
     }
+
+
+
 }

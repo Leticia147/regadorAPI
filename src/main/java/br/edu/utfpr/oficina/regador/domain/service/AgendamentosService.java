@@ -24,13 +24,13 @@ public class AgendamentosService implements AgendamentosPort {
     }
 
     @Override
-    public Agendamento incluirAgendamento(LocalDateTime horarioInicial, LocalDateTime horarioFinal) throws HorarioInvalidoException {
+    public Agendamento incluirAgendamento(LocalDateTime horarioInicial, LocalDateTime horarioFinal){
         validarHorarios(horarioInicial, horarioFinal);
         return bancoAdapter.incluirAgendamento(horarioInicial, horarioFinal);
     }
 
     @Override
-    public Agendamento atualizarAgendamento(Agendamento agendamento) throws HorarioInvalidoException {
+    public Agendamento atualizarAgendamento(Agendamento agendamento){
         validarHorarios(agendamento.getHorarioInicial(), agendamento.getHorarioFinal());
         return bancoAdapter.atualizarAgendamento(agendamento);
     }
@@ -40,7 +40,15 @@ public class AgendamentosService implements AgendamentosPort {
         bancoAdapter.removerAgendamento(identificador);
     }
 
-    private void validarHorarios(LocalDateTime horarioInicial, LocalDateTime horarioFinal) throws HorarioInvalidoException {
+    @Override
+    public Agendamento consultarAgendamentoId(String id){
+        return bancoAdapter.consultarAgendamentoId(id);
+    }
+
+    private void validarHorarios(LocalDateTime horarioInicial, LocalDateTime horarioFinal){
+        if (horarioFinal.isBefore(horarioInicial)){
+            throw new HorarioInvalidoException("Horario final antes do horario inicial");
+        }
         List<Agendamento> agendamentos = bancoAdapter.consultarTodosOsAgendamentos();
         boolean horarioInicialInvalido = verificarHorarioExistenteInicial(horarioInicial,agendamentos);
         boolean horarioFinalInvalido = verificarHorarioExistenteFinal(horarioFinal,agendamentos);
